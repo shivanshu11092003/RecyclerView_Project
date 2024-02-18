@@ -3,18 +3,29 @@ package com.example.recyclerview
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.recyclerview.MyAdapter.ViewHolder
+
 import com.google.android.material.imageview.ShapeableImageView
 
 class MyAdapter(var newsArrayList: ArrayList<News>, var context: Activity) :
     RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+        private lateinit var mylistener: onItemClickListener
+        interface onItemClickListener{
+            fun onclick(position : Int)
+        }
+    fun setOnItemClickListener(listener: onItemClickListener){
+        mylistener=listener
+    }
+
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemview=LayoutInflater.from(parent.context).inflate(R.layout.each_row,parent,false)
-        return ViewHolder(itemview)
+        return ViewHolder(itemview,mylistener)
 
     }
 
@@ -30,9 +41,15 @@ class MyAdapter(var newsArrayList: ArrayList<News>, var context: Activity) :
 
     }
 
-    class ViewHolder(itemview: View):RecyclerView.ViewHolder(itemview) {
+    class ViewHolder(itemview: View,listener: onItemClickListener):RecyclerView.ViewHolder(itemview) {
         val htitle=itemview.findViewById<TextView>(R.id.TextID)
         val imageid=itemview.findViewById<ShapeableImageView>(R.id.imageID)
+
+        init {
+            itemview.setOnClickListener {
+                listener.onclick(adapterPosition)
+            }
+        }
 
 
     }
